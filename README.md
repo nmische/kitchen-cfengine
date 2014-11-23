@@ -1,4 +1,4 @@
-# Kitchen::Provisioner::Cfengine
+# Kitchen::Provisioner::CFEngine
 
 A CFEngine Provisioner for Test Kitchen.
 
