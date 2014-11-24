@@ -8,11 +8,11 @@ Gem::Specification.new do |spec|
   spec.version       = Kitchen::Provisioner::CFENGINE_VERSION
   spec.authors       = ["Nathan Mische"]
   spec.email         = ["nmische@gmail.com"]
-  spec.description   = "Kitchen::Provisioner::CFEngine - A CFEngine Provisioner for Test Kitchen."
+  spec.description   = "Kitchen::Provisioner::Cfengine - A CFEngine Provisioner for Test Kitchen."
   spec.homepage      = "https://github.com/nmische/kitchen-cfengine/"
   spec.license       = "MIT"
 
-  spec.files         = `git ls-files -z`.split("\x0")
+  spec.files         = `git ls-files`.split($/)
   spec.executables   = []
   spec.test_files    = spec.files.grep(%r{^(test|spec|features)/})
   spec.require_paths = ["lib"]
