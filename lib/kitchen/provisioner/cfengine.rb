@@ -8,29 +8,71 @@ module Kitchen
 
     class Cfengine < Base
 
-      default_config :require_cfengine_quick_install, true
       default_config :cfenging_type, "community"
       default_config :cfengine_community_quick_install_url, "http://s3.amazonaws.com/cfengine.packages/quick-install-cfengine-community.sh"
       default_config :cfengine_enterprise_quick_install_url, "http://s3.amazonaws.com/cfengine.packages/quick-install-cfengine-enterprise.sh"
       default_config :chef_omnibus_url, "https://www.getchef.com/chef/install.sh"
-      default_config :cfengine_policy_server_address, "127.0.0.1"
-      default_config :cf_agent_args, ""
+      default_config :cfengine_policy_server_address, ""
+      default_config :cf_agent_args, "-KI"
+      default_config :run_list, []
+      default_config :cfengine_files do |provisioner|
+        provisioner.calculate_path("test/policy_files")
+      end
+      expand_path_for :cfengine_files
+
+
+      def create_sandbox
+        super
+        prepare_files
+      end
 
       def install_command
-        return unless config[:require_cfengine_quick_install]
         lines = [Kitchen::Util.shell_helpers, install_cfengine, install_busser]
         lines.join("\n")
       end
 
       def init_command
-        cmd = [sudo("/var/cfengine/bin/cf-agent"), "--bootstrap #{config[:cfengine_policy_server_address]}"]
+        if config[:cfengine_policy_server_address] == ""
+          <<-INIT
+            if [ ! -e "var/cfengine/policy_server.dat" ]
+              then
+              LANG=en /sbin/ifconfig | grep 'inet addr:' | grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1 }' | head -n 1 | xargs #{sudo('/var/cfengine/bin/cf-agent')} --bootstrap
+            fi
+          INIT
+        else
+          <<-INIT
+            if [ ! -e "var/cfengine/policy_server.dat" ]
+              then
+              #{sudo('/var/cfengine/bin/cf-agent')} --bootstrap #{config[:cfengine_policy_server_address]}
+            fi
+          INIT
+        end
+      end
+
+      def prepare_command
+        <<-PREP
+          #{sudo('cp')} -rf #{config[:root_path]}/* /var/cfengine
+          #{sudo('/var/cfengine/bin/cf-agent')} -KI -f failsafe.cf
+        PREP
+      end
+
+      def run_command
+        cmd = [sudo("/var/cfengine/bin/cf-agent"), config[:cf_agent_args]]
+        cmd << "-f" << config[:run_list] if config[:run_list].length > 0
         cmd.join(" ").strip
       end
 
-      # (see Base#run_command)
-      def run_command
-        cmd = [sudo("/var/cfengine/bin/cf-agent"), config[:cf_agent_args]]
-        cmd.join(" ").strip
+
+
+      def prepare_files
+        return unless config[:cfengine_files]
+
+        info("Preparing cfengine files")
+        debug("Using cfengine files from #{config[:cfengine_files]}")
+
+        tmpdata_dir = File.join(sandbox_path, "cfengine_files")
+        FileUtils.mkdir_p(tmpdata_dir)
+        FileUtils.cp_r(Dir.glob("#{config[:cfengine_files]}/*"), tmpdata_dir)
       end
 
       def install_cfengine
@@ -65,10 +107,6 @@ module Kitchen
         else
           config[:cfengine_enterprise_quick_install_url]
         end
-      end
-
-      def policy_server_address
-        # LANG=en ifconfig  | grep 'inet addr:'| grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1 }'
       end
 
     end
