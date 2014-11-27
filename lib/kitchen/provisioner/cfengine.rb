@@ -16,7 +16,7 @@ module Kitchen
       default_config :cf_agent_args, "-KI"
       default_config :run_list, []
       default_config :cfengine_files do |provisioner|
-        provisioner.calculate_path("test/policy_files")
+        provisioner.calculate_path("test/cfengine_files")
       end
       expand_path_for :cfengine_files
 
