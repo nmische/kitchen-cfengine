@@ -34,14 +34,14 @@ module Kitchen
       def init_command
         if config[:cfengine_policy_server_address] == ""
           <<-INIT
-            if [ ! -e "var/cfengine/policy_server.dat" ]
+            if [ ! -e "/var/cfengine/policy_server.dat" ]
               then
               LANG=en /sbin/ifconfig | grep 'inet addr:' | grep -v '127.0.0.1' | cut -d: -f2 | awk '{ print $1 }' | head -n 1 | xargs #{sudo('/var/cfengine/bin/cf-agent')} --bootstrap
             fi
           INIT
         else
           <<-INIT
-            if [ ! -e "var/cfengine/policy_server.dat" ]
+            if [ ! -e "/var/cfengine/policy_server.dat" ]
               then
               #{sudo('/var/cfengine/bin/cf-agent')} --bootstrap #{config[:cfengine_policy_server_address]}
             fi
