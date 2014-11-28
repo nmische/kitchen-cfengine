@@ -8,6 +8,7 @@ Gem::Specification.new do |spec|
   spec.version       = Kitchen::Provisioner::CFENGINE_VERSION
   spec.authors       = ["Nathan Mische"]
   spec.email         = ["nmische@gmail.com"]
+  spec.summary       = "A CFEngine Provisioner for Test Kitchen."
   spec.description   = "Kitchen::Provisioner::Cfengine - A CFEngine Provisioner for Test Kitchen."
   spec.homepage      = "https://github.com/nmische/kitchen-cfengine"
   spec.license       = "MIT"
