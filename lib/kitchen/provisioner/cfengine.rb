@@ -53,6 +53,7 @@ module Kitchen
         <<-PREP
           #{sudo('cp')} -rf #{config[:root_path]}/* /var/cfengine
           #{sudo('/var/cfengine/bin/cf-agent')} -KI -f failsafe.cf
+          sleep 5
         PREP
       end
 
