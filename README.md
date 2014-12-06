@@ -1,6 +1,6 @@
 # Kitchen::Provisioner::Cfengine
 
-A [CFEngine](http://cfengine.com/) provisioner for [Test Kitchen](http://cfengine.com/).
+A [CFEngine](http://cfengine.com/) provisioner for [Test Kitchen](http://kitchen.ci/).
 
 ## Installation
 
