@@ -14,6 +14,7 @@ module Kitchen
       default_config :chef_omnibus_url, "https://www.getchef.com/chef/install.sh"
       default_config :cfengine_policy_server_address, ""
       default_config :cf_agent_args, "-KI"
+      default_config :cf_agent_runs, "1"
       default_config :run_list, []
       default_config :cfengine_files do |provisioner|
         provisioner.calculate_path("test/cfengine_files")
@@ -60,7 +61,18 @@ module Kitchen
       def run_command
         cmd = [sudo("/var/cfengine/bin/cf-agent"), config[:cf_agent_args]]
         cmd << "-f" << config[:run_list] if config[:run_list].length > 0
-        cmd.join(" ").strip
+        cmd = cmd.join(" ").strip
+        if config[:cf_agent_runs].to_i > 1
+          cmd = <<-RUN
+            r=1
+            while [ $r -le #{config[:cf_agent_runs]} ]
+            do
+              /bin/echo "-----> cf-agent run $r"
+              #{cmd}
+              r=`expr $r + 1`
+            done
+          RUN
+        end
       end
 
 

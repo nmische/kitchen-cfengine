@@ -30,6 +30,7 @@ The following attributes may be set at the provisioner level:
 * `chef_omnibus_url` - url for chef omnibus install, defaults to `https://www.getchef.com/chef/install.sh`
 * `cfengine_policy_server_address` - optional IP address or hostname for policy server, if no address is provided the VM is bootstrapped to itself
 * `cf_agent_args` - arguments to pass to cf-agent on provisioning, defaults to `-KI`
+* `cf_agent_runs` - number of times to run cf-agent, useful if multiple runs are needed for full convergence, defaults to `1`
 * `cfengine_files` - specifies a directory that will be copied into  `/var/cfengine/` on the VM, defaults to `test/cfengine_files`
 
 Additionally you may set the `run_list` attribute at the suite level to run a specific policy file.
