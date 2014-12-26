@@ -21,7 +21,6 @@ module Kitchen
       end
       expand_path_for :cfengine_files
 
-
       def create_sandbox
         super
         prepare_files
@@ -73,9 +72,8 @@ module Kitchen
             done
           RUN
         end
+        return cmd
       end
-
-
 
       def prepare_files
         return unless config[:cfengine_files]
