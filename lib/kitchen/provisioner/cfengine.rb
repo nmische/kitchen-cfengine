@@ -92,7 +92,7 @@ module Kitchen
           then
           echo "-----> Installing cfengine (#{config[:cfenging_type]})"
           do_download #{cfengine_quick_install_url} /tmp/install.sh
-          #{sudo('sh')} /tmp/install.sh
+          #{sudo('bash')} /tmp/install.sh
         fi
         INSTALL
       end
